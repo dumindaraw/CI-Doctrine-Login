@@ -2,6 +2,11 @@
 
 class Login extends CI_Controller {
 
+	public function __construct()
+	{
+		parent::__construct();
+	}
+
 	public function index()
 	{
 		$this->load->view('login_view');
@@ -9,18 +14,27 @@ class Login extends CI_Controller {
 
 	public function trigger()
 	{
-		$this->load->model('login_model');
-		$isValidLogin = $this->login_model->checkLogin();
+		$this->form_validation->set_rules('uname', 'Username', 'required');
+		$this->form_validation->set_rules('pw', 'Password', 'required');
 
-		echo $isValidLogin;
-
-		if($isValidLogin == true)
+		if ($this->form_validation->run() == TRUE)
 		{
-			header("Location: ".$this->config->base_url()."home");
+			$this->load->model('login_model');
+			$isValidLogin = $this->login_model->checkLogin();
+			
+			if($isValidLogin == true)
+			{
+				redirect($this->config->base_url()."home");
+			}
+			else
+			{
+				redirect($this->config->base_url()."login");
+			}
 		}
 		else
 		{
-			header("Location: ".$this->config->base_url()."login");
+			$this->load->view('login_view');
 		}
+
 	}
 }

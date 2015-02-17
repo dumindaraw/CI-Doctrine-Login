@@ -16,12 +16,20 @@ class Login_model extends CI_Model
 	{
 
 		$user = $this->em->getRepository('TblUser');
+		$uname = $this->input->post("uname");
 		
-		$criteria = array('username' => $this->input->post("uname"), 'password' => md5($this->input->post("pw")));
+		$criteria = array('username' => $uname, 'password' => md5($this->input->post("pw")));
 
 	
 		if (count($user->findBy($criteria)) > 0) 
 		{
+			$newdata = array(
+                   'username'  => $uname,
+                   'logged_in' => TRUE
+               );
+
+			$this->session->set_userdata($newdata);
+
 			return true;
 		}
 
